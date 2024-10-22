@@ -11,6 +11,7 @@ namespace App\Models;
 
 use AzisHapidin\IndoRegion\Traits\RegencyTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Regency Model.
@@ -26,6 +27,11 @@ class Regency extends Model
      */
     protected $table = 'regencies';
 
+    protected $fillable =[
+        'province_id',
+        'name',
+    ];
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -40,7 +46,7 @@ class Regency extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function province()
+    public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class);
     }

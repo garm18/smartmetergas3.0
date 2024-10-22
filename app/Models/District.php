@@ -13,6 +13,7 @@ use AzisHapidin\IndoRegion\Traits\DistrictTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Regency;
 use App\Models\Village;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * District Model.
@@ -42,7 +43,7 @@ class District extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function regency()
+    public function regency(): BelongsTo
     {
         return $this->belongsTo(Regency::class);
     }

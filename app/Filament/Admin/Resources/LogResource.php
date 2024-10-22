@@ -2,9 +2,9 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\MetergasResource\Pages;
-use App\Filament\Admin\Resources\MetergasResource\RelationManagers;
-use App\Models\Metergas;
+use App\Filament\Admin\Resources\LogResource\Pages;
+use App\Filament\Admin\Resources\LogResource\RelationManagers;
+use App\Models\Log;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,37 +13,34 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class MetergasResource extends Resource
+class LogResource extends Resource
 {
-    protected static ?string $model = Metergas::class;
+    protected static ?string $model = Log::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-wifi';
-    protected static ?string $navigationLabel = 'Metergas';
-    protected static ?string $modelLabel = 'Meter Gas';
+    protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
+    protected static ?string $navigationLabel = 'Logs';
+    protected static ?string $modelLabel = 'Log';
     protected static ?string $navigationGroup = 'Logs System';
-    protected static ?string $slug = 'metergas-data';
-    protected static ?int $navigationSort = 1;
+    protected static ?string $slug = 'metergas-log';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('serialNo')
+                Forms\Components\Toggle::make('condition_io')
+                    ->required(),
+                Forms\Components\TextInput::make('volume')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('connectivity')
+                    ->numeric(),
+                Forms\Components\TextInput::make('type_io')
+                    ->required(),
+                Forms\Components\TextInput::make('battery')
                     ->required()
-                    ->options([
-                        'NB-IoT' => 'NB-IoT',
-                        'LoRaWAN' => 'LoRaWAN',
-                        'ZigFox' => 'ZigFox',
-                    ])->native(false),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required()
-                    ->native(false)
-                    ->preload()
-                    ->searchable(),
+                    ->numeric(),
+                Forms\Components\Select::make('metergas_id')
+                    ->relationship('metergas', 'id')
+                    ->required(),
             ]);
     }
 
@@ -51,11 +48,16 @@ class MetergasResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('serialNo')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('connectivity')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
+                Tables\Columns\IconColumn::make('condition_io')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('volume')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('type_io'),
+                Tables\Columns\TextColumn::make('battery')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('metergas.id')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -71,7 +73,6 @@ class MetergasResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -85,7 +86,7 @@ class MetergasResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageMetergas::route('/'),
+            'index' => Pages\ManageLogs::route('/'),
         ];
     }
 }
