@@ -56,7 +56,7 @@ class UserResource extends Resource
 
                 Forms\Components\TextInput::make('roles')
                     ->required(),
-  
+
             ]);
     }
 

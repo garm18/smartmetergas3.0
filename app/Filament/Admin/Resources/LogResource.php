@@ -28,18 +28,18 @@ class LogResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Toggle::make('condition_io')
+                Forms\Components\Select::make('metergas_id')
+                    ->relationship('metergas', 'id')
                     ->required(),
                 Forms\Components\TextInput::make('volume')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('type_io')
+                Forms\Components\TextInput::make('type_io') //Choose between Onsite or remote
                     ->required(),
                 Forms\Components\TextInput::make('battery')
                     ->required()
                     ->numeric(),
-                Forms\Components\Select::make('metergas_id')
-                    ->relationship('metergas', 'id')
+                Forms\Components\Toggle::make('condition_io')
                     ->required(),
             ]);
     }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->enum('roles', ['root','customer', 'admin'])->default('customer');
             $table->string('telpNo')->max_length(17)->nullable();
+            $table->string('address')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
