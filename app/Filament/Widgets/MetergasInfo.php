@@ -19,9 +19,11 @@ class MetergasInfo extends BaseWidget
         $data = [];
         if ($metergas->count()){
             foreach ($metergas as $item){
-                $log = $item->logs()->orderBy('created_at', 'desc')->first(); //melakukan update dimana data paling terbaru ditampilkan
-                $battery = $log ? $log->battery: "Null" ;
-                $volume = $log ? $log->volume : "Null";
+                $totalVolume = $item->logs()->sum('volume');
+                $latestLog = $item->logs()->latest()->first();
+
+                $battery = $latestLog ? $latestLog->battery : "Null";
+                $volume = $totalVolume ?: "Null";
 
                 // Determine battery color based on the percentage
                 if ($battery > 75) {

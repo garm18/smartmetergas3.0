@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
             $table->boolean('condition_io');
-            $table->integer('volume');
+            $table->decimal('volume', 8, 3);
             $table->enum('type_io', ['OnSite','remote']);
             $table->integer('battery');
             $table->foreignId('metergas_id')->references('id')->on('metergas')->onDelete('cascade');

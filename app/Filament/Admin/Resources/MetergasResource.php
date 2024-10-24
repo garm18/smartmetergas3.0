@@ -23,7 +23,7 @@ class MetergasResource extends Resource
 {
     protected static ?string $model = Metergas::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-wifi';
+    protected static ?string $navigationIcon = 'heroicon-o-signal';
     protected static ?string $navigationLabel = 'Metergas';
     protected static ?string $modelLabel = 'Meter Gas';
     protected static ?string $navigationGroup = 'Logs System';
