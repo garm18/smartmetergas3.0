@@ -34,7 +34,11 @@ class LogResource extends Resource
                 Forms\Components\TextInput::make('volume')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('type_io') //Choose between Onsite or remote
+                Forms\Components\Select::make('type_io') //Choose between Onsite or remote
+                    ->options([
+                        'Onsite' => 'Onsite',
+                        'Remote' => 'Remote',
+                    ])
                     ->required(),
                 Forms\Components\TextInput::make('battery')
                     ->required()
@@ -48,18 +52,19 @@ class LogResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\IconColumn::make('condition_io')
-                    ->boolean(),
+                Tables\Columns\TextColumn::make('owner')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('serial')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('volume')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('type_io'),
                 Tables\Columns\TextColumn::make('battery')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('metergas.id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('type_io'),
+                Tables\Columns\IconColumn::make('condition_io')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -75,12 +80,12 @@ class LogResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
+            // ->bulkActions([
+            //     Tables\Actions\BulkActionGroup::make([
+            //         Tables\Actions\DeleteBulkAction::make(),
+            //     ]),
+            // ]);
     }
 
     public static function getPages(): array

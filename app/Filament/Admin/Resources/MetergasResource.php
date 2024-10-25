@@ -111,16 +111,16 @@ class MetergasResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('connectivity')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
+                Tables\Columns\TextColumn::make('username')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('province.name')
+                Tables\Columns\TextColumn::make('province_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('regency.name')
+                Tables\Columns\TextColumn::make('regency_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('district.name')
+                Tables\Columns\TextColumn::make('district_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('village.name')
+                Tables\Columns\TextColumn::make('village_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

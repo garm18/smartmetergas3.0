@@ -59,4 +59,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Metergas::class, 'user_id', 'id');
     }
+
+        // In the User model
+    public function isSubscribedToSmartMeter(): bool
+    {
+        return $this->subscription_status === 'active'; // Check subscription status
+    }
+
+
 }
