@@ -26,7 +26,7 @@ class MetergasInfo extends BaseWidget
                 $volume = $totalVolume ?: "Null";
 
                 // Determine battery color based on the percentage
-                if ($battery > 75) {
+                if ($battery > 75 && $battery <= 100)  {
                     $batteryColor = 'green';
                 } elseif ($battery > 35 && $battery <= 75) {
                     $batteryColor = 'yellow';
