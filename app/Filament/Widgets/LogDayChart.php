@@ -8,43 +8,42 @@ use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Str; // To use the random color function
+use Illuminate\Support\Str;
 
-class LogAppChart extends ChartWidget
+class LogDayChart extends ChartWidget
 {
-    protected static ?string $heading = 'Volume PerMonth';
+    protected static ?string $heading = 'Volume Per Hour Today';
     protected static ?string $pollingInterval = null;
     protected static ?string $maxHeight = '300px';
     protected int | string | array $columnSpan = 'full';
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 1;
 
     protected function getData(): array
     {
         $user_id = Auth::user()->id;
-        $metergas = Metergas::where('user_id', $user_id)
-            ->get();
-
+        $metergas = Metergas::where('user_id', $user_id)->get();
         $data_log = [];
-        $period = CarbonPeriod::create(Carbon::now()->subMonth()->startOfDay(), '1 day', Carbon::now()->startOfDay());
-        $allDates = iterator_to_array($period);
 
-        $allDates = array_map(fn ($date) => $date->format('Y-m-d'), $allDates);
+        // Set period for today's date in hourly intervals
+        $period = CarbonPeriod::create(Carbon::today(), '1 hour', Carbon::now());
+        $allHours = iterator_to_array($period);
+        $allHours = array_map(fn($date) => $date->format('H:00'), $allHours);
 
         if ($metergas->isNotEmpty()) {
             foreach ($metergas as $item) {
                 $logs = Log::where('metergas_id', $item->id)
-                    ->whereDate('created_at', '>=', Carbon::now()->subMonth())
+                    ->whereDate('created_at', Carbon::today())
                     ->get()
-                    ->groupBy(function ($date) {
-                        return Carbon::parse($date->created_at)->format('Y-m-d');
+                    ->groupBy(function ($log) {
+                        return Carbon::parse($log->created_at)->format('H:00');
                     })
-                    ->map(function ($dayLogs) {
-                        return $dayLogs->sum('volume');
+                    ->map(function ($hourLogs) {
+                        return $hourLogs->sum('volume');
                     });
 
-                $dailyData = [];
-                foreach ($allDates as $date) {
-                    $dailyData[] = $logs->get($date, 0);
+                $hourlyData = [];
+                foreach ($allHours as $hour) {
+                    $hourlyData[] = $logs->get($hour, 0);
                 }
 
                 // Generate a random color for each dataset
@@ -52,7 +51,7 @@ class LogAppChart extends ChartWidget
 
                 $data_log[] = [
                     'label' => 'Metergas ' . $item->serialNo,
-                    'data' => $dailyData,
+                    'data' => $hourlyData,
                     'backgroundColor' => $color,
                     'borderColor' => $color,
                 ];
@@ -61,7 +60,7 @@ class LogAppChart extends ChartWidget
 
         return [
             'datasets' => $data_log,
-            'labels' => $allDates,
+            'labels' => $allHours,
         ];
     }
 
