@@ -18,20 +18,20 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
 
             // provinces
-            $table->bigInteger('province_id', 2);
-            $table->foreignId('province_id')->references('id')->on('provinces')->onDelete('restrict');
+            $table->bigInteger('province_id');
+            $table->foreign('province_id')->references('id')->on('provinces')->onDelete('restrict');
 
             // regencies
-            $table->bigInteger('regency_id', 4);
-            $table->foreignId('regency_id')->references('id')->on('regencies')->onDelete('restrict');
+            $table->bigInteger('regency_id');
+            $table->foreign('regency_id')->references('id')->on('regencies')->onDelete('restrict');
 
             // districts
-            $table->bigInteger('district_id', 7);
-            $table->foreignId('district_id')->references('id')->on('districts')->onDelete('restrict');
+            $table->bigInteger('district_id');
+            $table->foreign('district_id')->references('id')->on('districts')->onDelete('restrict');
 
             // villages
-            $table->bigInteger('village_id', 10);
-            $table->foreignId('village_id')->references('id')->on('villages')->onDelete('restrict');
+            $table->bigInteger('village_id');
+            $table->foreign('village_id')->references('id')->on('villages')->onDelete('restrict');
 
             $table->timestamps();
         });

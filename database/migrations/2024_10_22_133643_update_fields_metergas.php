@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('metergas', function (Blueprint $table) {
-            $table->bigInteger('province_id')->nullable();
-            $table->bigInteger('regency_id')->nullable();
-            $table->bigInteger('district_id')->nullable();
-            $table->bigInteger('village_id')->nullable();
+            $table->bigInteger('province_id')->nullable()->change();
+            $table->bigInteger('regency_id')->nullable()->change();
+            $table->bigInteger('district_id')->nullable()->change();
+            $table->bigInteger('village_id')->nullable()->change();
         });
     }
 
@@ -25,10 +25,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('metergas', function (Blueprint $table) {
-            $table->dropColumn('province_id');
-            $table->dropColumn('regency_id');
-            $table->dropColumn('district_id');
-            $table->dropColumn('village_id');
+            $table->dropColumn('province_id')->change();
+            $table->dropColumn('regency_id')->change();
+            $table->dropColumn('district_id')->change();
+            $table->dropColumn('village_id')->change();
         });
     }
 };
