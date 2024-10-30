@@ -15,7 +15,7 @@ class LogDayChart extends ChartWidget
     protected static ?string $heading = 'Volume Per Hour Today';
     protected static ?string $pollingInterval = null;
     protected static ?string $maxHeight = '300px';
-    protected int | string | array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 'half';
     protected static ?int $sort = 1;
 
     protected function getData(): array
