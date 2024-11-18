@@ -15,7 +15,7 @@ class LogAppChart extends ChartWidget
     protected static ?string $heading = 'Volume PerMonth';
     protected static ?string $pollingInterval = null;
     protected int | string | array $columnSpan = 'half';
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 3;
 
     protected function getData(): array
     {
