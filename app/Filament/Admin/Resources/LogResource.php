@@ -36,8 +36,8 @@ class LogResource extends Resource
                     ->numeric(),
                 Forms\Components\Select::make('type_io') //Choose between Onsite or remote
                     ->options([
-                        'Onsite' => 'Onsite',
-                        'Remote' => 'Remote',
+                        'Onsite' => 'Onsite', //Tombol ditekan dilokasi
+                        'Remote' => 'Remote', //Tombol ditekan via Web
                     ])
                     ->required(),
                 Forms\Components\TextInput::make('battery')
@@ -52,19 +52,21 @@ class LogResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('owner')
+                Tables\Columns\TextColumn::make('metergas_id')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('serial')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('owner'), //virtual tabel tidak bisa query
+                Tables\Columns\TextColumn::make('serial'), //virtual tabel tidak bisa query
                 Tables\Columns\TextColumn::make('volume')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('battery')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('type_io'),
+                Tables\Columns\TextColumn::make('type_io')
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('condition_io')
-                    ->boolean(),
+                    ->boolean()
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

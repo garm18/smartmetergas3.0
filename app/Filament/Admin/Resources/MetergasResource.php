@@ -108,20 +108,24 @@ class MetergasResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('serialNo')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('connectivity')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('username')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('province_name')
+                Tables\Columns\TextColumn::make('user.name') //"user.name" menggunakan titik agar searchable berfungsi
+                    ->searchable()
+                    ->numeric(),
+                Tables\Columns\TextColumn::make('province.name') //"province.name" menggunakan titik agar searchable berfungsi
                     ->searchable(),
-                Tables\Columns\TextColumn::make('regency_name')
+                Tables\Columns\TextColumn::make('regency.name') //"regency.name" menggunakan titik agar searchable berfungsi
                     ->searchable(),
-                Tables\Columns\TextColumn::make('district_name')
+                Tables\Columns\TextColumn::make('district.name') //"district.name" menggunakan titik agar searchable berfungsi
                     ->searchable(),
-                Tables\Columns\TextColumn::make('village_name')
+                Tables\Columns\TextColumn::make('village.name') //"village.name" menggunakan titik agar searchable berfungsi
                     ->searchable(),
+                Tables\Columns\IconColumn::make('valve_status')
+                    ->boolean()
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -135,6 +139,33 @@ class MetergasResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('valve_status')
+                    ->requiresConfirmation()
+                    ->modalHeading(fn($record)=>$record->valve_status ? 'CLOSED' : 'OPEN')
+                    ->color(fn($record) => $record->valve_status ? 'success' : 'danger') // Red for closed, green for open
+                    ->action(function($record){
+                        $record->valve_status =!$record->valve_status;
+                        $record->save();
+                        if ($record->logs()->exists()) {
+                            $lastLog= $record->logs()->orderBy('created_at', 'desc')->first();
+                            $record->logs()->create([
+                                'condition_io' => $record->valve_status,
+                                'volume' => $lastLog->volume,
+                                'type_io' => 'remote',
+                                'battery' => $lastLog->battery,
+                                'metergas_id' => $record->id,
+                            ]);
+                        }
+                        else{
+                            $record->logs()->create([
+                                'condition_io' => $record->valve_status,
+                                'volume' => null,
+                                'type_io' => 'remote',
+                                'battery' => null,
+                                'metergas_id' => $record->id,
+                            ]);
+                        }
+                    }),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
