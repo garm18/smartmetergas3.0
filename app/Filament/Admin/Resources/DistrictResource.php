@@ -19,7 +19,7 @@ class DistrictResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?string $navigationLabel = 'District';
-    protected static ?string $modelLabel = 'Customer District';
+    protected static ?string $modelLabel = 'District';
     protected static ?string $navigationGroup = 'Customer Addresses';
     protected static ?string $slug = 'customer-districts';
     protected static ?int $navigationSort = 3;

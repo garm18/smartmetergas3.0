@@ -19,7 +19,7 @@ class VillageResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-home';
     protected static ?string $navigationLabel = 'Village';
-    protected static ?string $modelLabel = 'Customer Village';
+    protected static ?string $modelLabel = 'Village';
     protected static ?string $navigationGroup = 'Customer Addresses';
     protected static ?string $slug = 'customer-village';
     protected static ?int $navigationSort = 4;

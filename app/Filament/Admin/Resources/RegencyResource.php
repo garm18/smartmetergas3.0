@@ -19,7 +19,7 @@ class RegencyResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
     protected static ?string $navigationLabel = 'Regency';
-    protected static ?string $modelLabel = 'Customer Regency';
+    protected static ?string $modelLabel = 'Regency';
     protected static ?string $navigationGroup = 'Customer Addresses';
     protected static ?string $slug = 'customer-regency';
     protected static ?int $navigationSort = 2;
