@@ -1,6 +1,6 @@
 <x-filament::layouts.app>
     <div>
-        <h1>Prediction Chart</h1>
+        <h1></h1>
         <canvas id="myChart"></canvas>
     </div>
 

@@ -1,6 +1,6 @@
 <x-filament::page>
-    <div class="filament-card">
-        <h2 class="text-lg font-bold mb-4">Prediksi Data</h2>
+    <div class="filament-card bg-white shadow-lg rounded-xl p-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Prediksi Data Penggunaan</h2>
         <canvas id="predictionChart" class="w-full h-96"></canvas>
     </div>
 
@@ -10,27 +10,26 @@
             const apiURL = "https://iqsansyachranie.pythonanywhere.com/predict";
 
             try {
-                // Fetch data from the API
                 const response = await fetch(apiURL);
                 const data = await response.json();
 
-                // Extract dates and predictions
                 const dates = Object.keys(data.predictions);
                 const predictions = Object.values(data.predictions);
 
-                // Initialize Chart.js
                 const ctx = document.getElementById('predictionChart').getContext('2d');
                 new Chart(ctx, {
-                    type: 'line', // Chart type
+                    type: 'line',
                     data: {
-                        labels: dates, // X-axis labels
+                        labels: dates,
                         datasets: [{
                             label: 'Prediksi',
-                            data: predictions, // Y-axis data
-                            borderColor: 'rgba(75, 192, 192, 1)', // Line color
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color
-                            borderWidth: 2, // Line thickness
-                            tension: 0.4 // Smooth curve
+                            data: predictions,
+                            borderColor: '#4F46E5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#4F46E5'
                         }]
                     },
                     options: {
@@ -38,20 +37,49 @@
                         plugins: {
                             title: {
                                 display: true,
-                                text: 'Prediksi Data berdasarkan API'
+                                text: 'Prediksi Data berdasarkan API',
+                                font: {
+                                    size: 18,
+                                    weight: 'bold'
+                                },
+                                color: '#374151'
+                            },
+                            legend: {
+                                labels: {
+                                    color: '#374151',
+                                    font: {
+                                        size: 14
+                                    }
+                                }
                             }
                         },
                         scales: {
                             x: {
                                 title: {
                                     display: true,
-                                    text: 'Tanggal'
+                                    text: 'Tanggal',
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    },
+                                    color: '#6B7280'
+                                },
+                                ticks: {
+                                    color: '#6B7280'
                                 }
                             },
                             y: {
                                 title: {
                                     display: true,
-                                    text: 'Nilai Prediksi'
+                                    text: 'Nilai Prediksi',
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    },
+                                    color: '#6B7280'
+                                },
+                                ticks: {
+                                    color: '#6B7280'
                                 },
                                 beginAtZero: true
                             }
