@@ -7,8 +7,6 @@ use App\Models\Metergas;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
-use Illuminate\Support\Str;
 
 class LogDayChart extends ChartWidget
 {
@@ -19,38 +17,36 @@ class LogDayChart extends ChartWidget
 
     protected function getData(): array
     {
-        $user_id = Auth::user()->id;
+        $user_id = Auth::id();
         $metergas = Metergas::where('user_id', $user_id)->get();
         $data_log = [];
 
-        // Set period for today's date in hourly intervals
-        $period = CarbonPeriod::create(Carbon::today(), '1 hour', Carbon::now());
-        $allHours = iterator_to_array($period);
-        $allHours = array_map(fn($date) => $date->format('H:00'), $allHours);
+        // Membuat daftar jam dari 00:00 - 23:00
+        $allHours = collect(range(0, 23))->map(fn($hour) => str_pad($hour, 2, '0', STR_PAD_LEFT) . ':00')->toArray();
 
         if ($metergas->isNotEmpty()) {
             foreach ($metergas as $item) {
+                // Ambil log untuk hari ini
                 $logs = Log::where('metergas_id', $item->id)
-                    ->whereDate('created_at', Carbon::today())
+                    ->whereBetween('created_at', [Carbon::today()->startOfDay(), Carbon::today()->endOfDay()])
                     ->get()
-                    ->groupBy(function ($log) {
-                        return Carbon::parse($log->created_at)->format('H:00');
-                    })
-                    ->map(function ($hourLogs) {
-                        return $hourLogs->sum('volume');
-                    });
+                    ->groupBy(fn($log) => Carbon::parse($log->created_at)->format('H:00'))
+                    ->map(fn($hourLogs) => $hourLogs->sum('volume'));
 
-                $hourlyData = [];
-                foreach ($allHours as $hour) {
-                    $hourlyData[] = $logs->get($hour, 0);
+                // Inisialisasi array data dengan nilai 0 untuk semua jam
+                $hourlyData = array_fill_keys($allHours, 0);
+
+                // Masukkan data dari query ke dalam array jam yang sudah diinisialisasi
+                foreach ($logs as $hour => $volume) {
+                    $hourlyData[$hour] = $volume;
                 }
 
-                // Generate a random color for each dataset
+                // Warna untuk dataset
                 $color = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
 
                 $data_log[] = [
                     'label' => 'Metergas ' . $item->serialNo,
-                    'data' => $hourlyData,
+                    'data' => array_values($hourlyData),
                     'backgroundColor' => $color,
                     'borderColor' => $color,
                 ];

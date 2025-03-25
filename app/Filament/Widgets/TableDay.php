@@ -31,7 +31,7 @@ class TableDay extends BaseWidget
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Updated Volume')
-                    ->dateTime('H:i:s'),
+                    ->dateTime('Y-m-d H:i:s'),
             ]);
     }
 }

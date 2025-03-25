@@ -33,7 +33,7 @@ class TableApp extends BaseWidget
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Updated Volume')
-                    ->dateTime('Y-m-d'),
+                    ->dateTime('Y-m-d H:i:s'),
             ]);
     }
 }

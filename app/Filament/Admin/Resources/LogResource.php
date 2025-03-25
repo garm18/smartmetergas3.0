@@ -54,6 +54,8 @@ class LogResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('metergas_id')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('imei')
+                    ->label('IMEI'),
                 Tables\Columns\TextColumn::make('owner'), //virtual tabel tidak bisa query
                 Tables\Columns\TextColumn::make('serial'), //virtual tabel tidak bisa query
                 Tables\Columns\TextColumn::make('volume')
@@ -64,6 +66,12 @@ class LogResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('type_io')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('signal_strength')
+                    ->label('rssi')
+                    ->numeric(),
+                Tables\Columns\TextColumn::make('signal_level')
+                    ->label('signal level')
+                    ->numeric(),
                 Tables\Columns\IconColumn::make('condition_io')
                     ->boolean()
                     ->alignCenter(),
