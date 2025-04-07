@@ -13,10 +13,19 @@
                 const response = await fetch(apiURL);
                 const data = await response.json();
 
-                const dates = Object.keys(data.predictions);
-                const predictions = Object.values(data.predictions);
+                console.log("Fetched data:", data); // Debugging log
 
-                const ctx = document.getElementById('predictionChart').getContext('2d');
+                // Pastikan ambil data dari `forecast`
+                const dates = Object.keys(data.forecast);
+                const predictions = Object.values(data.forecast);
+
+                // Pastikan elemen `<canvas>` ada
+                const ctx = document.getElementById('predictionChart')?.getContext('2d');
+                if (!ctx) {
+                    console.error("Canvas element not found!");
+                    return;
+                }
+
                 new Chart(ctx, {
                     type: 'line',
                     data: {
