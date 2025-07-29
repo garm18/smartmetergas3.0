@@ -2,16 +2,18 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\LogResource\Pages;
-use App\Filament\Admin\Resources\LogResource\RelationManagers;
 use App\Models\Log;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Spatie\SimpleExcel\SimpleExcelWriter;
+use Illuminate\Support\Facades\Response;
+use App\Filament\Admin\Resources\LogResource\Pages;
 
 class LogResource extends Resource
 {
@@ -90,12 +92,37 @@ class LogResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                    BulkAction::make('export_csv')
+                        ->label('Export CSV')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function ($records) {
+                            $filename = 'log_export_' . now()->format('Ymd_His') . '.csv';
+                            $path = storage_path('app/' . $filename);
+
+                            SimpleExcelWriter::create($path)
+                                ->addRows(
+                                    $records->map(fn ($log) => [
+                                        'IMEI' => $log->imei,
+                                        'Owner' => $log->owner,
+                                        'Serial' => $log->serial,
+                                        'Volume' => $log->volume,
+                                        'Battery' => $log->battery,
+                                        'Signal Strength' => $log->signal_strength,
+                                        'Signal Level' => $log->signal_level,
+                                        'Condition IO' => $log->condition_io ? 'Active' : 'Inactive',
+                                        'Type IO' => $log->type_io,
+                                        'Created At' => $log->created_at,
+                                    ])
+                                );
+
+                            return Response::download($path)->deleteFileAfterSend();
+                        }),
+                ]),
             ]);
-            // ->bulkActions([
-            //     Tables\Actions\BulkActionGroup::make([
-            //         Tables\Actions\DeleteBulkAction::make(),
-            //     ]),
-            // ]);
     }
 
     public static function getPages(): array

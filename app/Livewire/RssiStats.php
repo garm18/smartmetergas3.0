@@ -12,7 +12,7 @@ class RssiStats extends BaseWidget
     protected function getStats(): array
     {
         try {
-            $response = Http::get('http://195.35.28.54:8080/predict-rssi');
+            $response = Http::get('http://195.35.28.54:5005/predict-rssi');
 
             if (!$response->successful()) {
                 return [
