@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    init: true
+    # Akses web dibatasi ke host untuk pengembangan lokal.
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
+    env_file: .env
+    # Port internal 8080 memungkinkan Apache berjalan tanpa capability tambahan.
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
