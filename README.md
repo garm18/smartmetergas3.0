@@ -70,7 +70,7 @@ openssl rand -base64 32
 
 Jika `APP_KEY` masih kosong, awali hasil OpenSSL dengan `base64:` dan simpan sebagai `APP_KEY` di `.env`. Pertahankan kunci yang sama saat membangun ulang container.
 
-Gunakan `DB_HOST` yang bisa dijangkau dari container. Pada Docker Desktop, gunakan `host.docker.internal` jika MySQL berjalan di host. Di dalam container, `127.0.0.1` mengarah ke container aplikasi. [Akses layanan host dari Docker Desktop](https://docs.docker.com/desktop/features/networking/networking-how-tos/#connect-a-container-to-a-service-from-docker-desktop)
+Gunakan `DB_HOST` yang bisa dijangkau dari container. Pada Docker Desktop, gunakan `host.docker.internal` jika MySQL berjalan di host. Di dalam container, `127.0.0.1` mengarah ke container aplikasi. [Akses layanan host dari Docker Desktop](https://docs.docker.com/desktop/features/networking/networking-how-tos/#connect-a-container-to-a-service-on-the-host)
 
 ```bash
 docker compose build
