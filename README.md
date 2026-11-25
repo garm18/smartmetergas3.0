@@ -2,6 +2,8 @@
 
 SmartMeterGas 3.0 adalah aplikasi web untuk memantau meter gas. Pelanggan melihat volume gas, baterai, status katup, dan riwayat meter atas nama mereka. Administrator mengelola akun, meter, log, dan data wilayah Indonesia.
 
+[Panel aplikasi](#panel-aplikasi) · [Alur data](#sumber-data) · [Konfigurasi awal](#konfigurasi-awal) · [Docker](#menjalankan-dengan-docker) · [Tanpa Docker](#menjalankan-tanpa-docker)
+
 ## Panel aplikasi
 
 | Panel | Akses | Fitur |
@@ -9,7 +11,34 @@ SmartMeterGas 3.0 adalah aplikasi web untuk memantau meter gas. Pelanggan meliha
 | Pelanggan (`/`) | Login dengan email atau username. Akun yang didaftarkan lewat panel ini mendapat peran `customer`. | Ringkasan per meter, grafik volume per jam dan per hari, tabel log, serta status katup. Menu lain menampilkan pemantauan RSSI, prediksi penggunaan, dan prediksi baterai. |
 | Admin (`/admin`) | Akun dengan peran `admin` atau `root`. | Kelola pengguna, meter, log, dan wilayah. Pilih baris pada menu **Logs** untuk mengekspornya ke CSV. |
 
+Setelah aplikasi berjalan, pilih tautan sesuai cara menjalankannya. Tautan ini memakai port lokal bawaan.
+
+<details>
+<summary>Buka aplikasi dari Docker</summary>
+
+- [Panel pelanggan](http://127.0.0.1:8080/) · [Daftar akun](http://127.0.0.1:8080/register) · [Panel admin](http://127.0.0.1:8080/admin)
+- [RSSI Monitoring](http://127.0.0.1:8080/rssi-monitoring) · [Health check](http://127.0.0.1:8080/up)
+
+</details>
+
+<details>
+<summary>Buka aplikasi dari Artisan</summary>
+
+- [Panel pelanggan](http://127.0.0.1:8000/) · [Daftar akun](http://127.0.0.1:8000/register) · [Panel admin](http://127.0.0.1:8000/admin)
+- [RSSI Monitoring](http://127.0.0.1:8000/rssi-monitoring) · [Health check](http://127.0.0.1:8000/up)
+
+</details>
+
 ## Sumber data
+
+```mermaid
+flowchart TD
+    MySQL["MySQL"] --> Dashboard["Dashboard Filament"]
+    Dashboard --> Browser["Browser"]
+    API["API eksternal"] -->|Riwayat dan prediksi RSSI| Livewire["Laravel Livewire"]
+    Livewire --> Browser
+    API -->|Prediksi penggunaan dan baterai| Browser
+```
 
 Dashboard membaca relasi `users` → `metergas` → `logs` dari MySQL. Setiap meter merujuk ke satu pengguna dan dapat dikaitkan dengan provinsi, kabupaten/kota, kecamatan, serta desa/kelurahan. Widget dashboard pelanggan membatasi meter dan log berdasarkan pemilik. Grafik menjumlahkan kolom `volume` per periode, sedangkan ringkasan baterai memakai log terbaru.
 
@@ -50,7 +79,7 @@ docker compose up -d
 docker compose ps
 ```
 
-Jalankan migrasi secara eksplisit pada database yang memang disiapkan untuk aplikasi. Migrasi dari database kosong dan seeder wilayah telah diuji dengan MySQL 8.4. Jika database baru memerlukan pilihan wilayah, jalankan `docker compose run --rm app php artisan db:seed --class=IndoRegionSeeder` sekali. Buka `http://127.0.0.1:8080/register` untuk membuat akun. Gunakan `docker compose exec app php artisan tinker` jika perlu menyiapkan akun admin lokal.
+Jalankan migrasi secara eksplisit pada database yang memang disiapkan untuk aplikasi. Migrasi dari database kosong dan seeder wilayah telah diuji dengan MySQL 8.4. Jika database baru memerlukan pilihan wilayah, jalankan `docker compose run --rm app php artisan db:seed --class=IndoRegionSeeder` sekali. Setelah aplikasi berjalan, lanjutkan ke [penyiapan akun dan meter uji](#menyiapkan-akun-dan-meter-uji).
 
 Health check `/up` memeriksa apakah Laravel bisa memulai aplikasi. Gunakan `docker compose exec app php artisan migrate:status` untuk memeriksa koneksi database dan status skemanya.
 
@@ -78,10 +107,15 @@ php artisan serve
 
 Jalankan seeder wilayah sekali pada database baru. Seeder memasukkan provinsi, kabupaten/kota, kecamatan, dan desa/kelurahan untuk pilihan lokasi pada formulir meter. Jika mengubah CSS atau JavaScript di `resources/`, jalankan `npm ci` lalu `npm run build`, atau gunakan `npm run dev` di terminal terpisah selama pengembangan.
 
-### Menyiapkan akun dan meter uji
+## Menyiapkan akun dan meter uji
 
-1. Buka `http://127.0.0.1:8000/register` dan daftarkan akun lokal.
-2. Untuk menguji panel admin, jalankan `php artisan tinker` dan ubah peran akun lokal yang baru didaftarkan. Ganti alamat email pada contoh.
+<details>
+<summary>Langkah uji untuk panel pelanggan dan admin</summary>
+
+Untuk menjalankan Tinker, gunakan `php artisan tinker` tanpa Docker atau `docker compose exec app php artisan tinker` dengan Docker.
+
+1. Buka tautan **Daftar akun** di bagian [Panel aplikasi](#panel-aplikasi).
+2. Buka Tinker dan ubah peran akun lokal yang baru didaftarkan. Ganti alamat email pada contoh.
 
    ```php
    App\Models\User::where('email', 'admin@example.test')->firstOrFail()->update(['roles' => 'admin']);
@@ -89,6 +123,8 @@ Jalankan seeder wilayah sekali pada database baru. Seeder memasukkan provinsi, k
 
 3. Masuk ke `/admin`. Siapkan satu akun pelanggan, kaitkan sebuah meter dengan akun tersebut di menu **Metergas**, lalu buat log uji lewat menu **Logs**.
 4. Masuk ke `/` dengan akun pelanggan untuk melihat meter dan lognya. Halaman RSSI dan prediksi memerlukan layanan eksternal yang dapat dijangkau.
+
+</details>
 
 ## Peta kode
 
