@@ -70,7 +70,7 @@ openssl rand -base64 32
 
 Jika `APP_KEY` masih kosong, awali hasil OpenSSL dengan `base64:` dan simpan sebagai `APP_KEY` di `.env`. Pertahankan kunci yang sama saat membangun ulang container.
 
-Gunakan `DB_HOST` yang bisa dijangkau dari container. Pada Docker Desktop, gunakan `host.docker.internal` jika MySQL berjalan di host. Di dalam container, `127.0.0.1` mengarah ke container aplikasi. [Akses layanan host dari Docker Desktop](https://docs.docker.com/desktop/features/networking/networking-how-tos/#connect-a-container-to-a-service-on-the-host)
+Gunakan `DB_HOST` yang bisa dijangkau dari container. Pada Docker Desktop, gunakan `host.docker.internal` jika MySQL berjalan di host. Di dalam container, `127.0.0.1` mengarah ke container aplikasi. [Akses layanan host dari Docker Desktop](https://docs.docker.com/desktop/features/networking/networking-how-tos/#connect-a-container-to-a-service-from-docker-desktop)
 
 ```bash
 docker compose build
@@ -136,9 +136,13 @@ Untuk menjalankan Tinker, gunakan `php artisan tinker` tanpa Docker atau `docker
 | [`app/Models/`](app/Models/) dan [`database/migrations/`](database/migrations/) | Relasi Eloquent dan skema MySQL. |
 | [`app/Livewire/`](app/Livewire/) dan [`resources/views/filament/pages/`](resources/views/filament/pages/) | Permintaan data RSSI dan tampilan prediksi. |
 
+## Lisensi
+
+Kode asli proyek ini dilisensikan di bawah [MIT License](LICENSE). Lisensi ini tidak memberikan hak atas merek dagang, logo, atau materi pihak ketiga; dependensi dan aset tersebut mengikuti lisensinya masing-masing.
+
 ## Catatan pemeliharaan
 
 - **Status katup.** Aksi pada aplikasi menyimpan `valve_status` dan mencoba membuat log bertipe `remote`. Kode ini belum menunjukkan pengiriman perintah ke perangkat atau konfirmasi status fisik. Untuk meter tanpa log, aksi pelanggan mencoba menyimpan `volume` dan `battery` sebagai `null`, padahal skema mewajibkan kedua kolom. Karena status tersimpan lebih dulu, kegagalan insert bisa membuat status di dashboard berubah tanpa log baru. [Aksi status katup](app/Filament/Widgets/TableValveStatus.php) · [Skema log](database/migrations/2024_10_19_091951_create_logs_table.php)
 - **Agregasi volume.** Grafik menjumlahkan semua log yang cocok. Aksi katup menyalin volume dari log terakhir, jadi perubahan status dapat membuat volume yang sama terhitung lagi. [Grafik volume harian](app/Filament/Widgets/LogDayChart.php)
 - **Riwayat RSSI.** Migrasi sinyal menghapus kolom `rssi` lama dan menambahkan `signal_strength` tanpa menyalin riwayatnya. Periksa cadangan data bila memigrasikan database lama yang masih menyimpan kolom itu. [Migrasi sinyal](database/migrations/2025_03_22_155555_update_column_logs.php)
-- **Pengujian.** Jalankan `php artisan test` untuk suite Pest yang tersedia. Tes fitur bawaan mengharapkan HTTP 200 dari `/`, sementara dashboard pelanggan meminta login. Suite saat ini berisi tes contoh. [Tes fitur](tests/Feature/ExampleTest.php) · [Konfigurasi panel pelanggan](app/Providers/Filament/AppPanelProvider.php)
+- **Pengujian.** `php artisan test` memverifikasi rute pelanggan mengarahkan pengunjung anonim ke halaman login. Workflow CI menjalankan tes tersebut dan build aset frontend pada push dan pull request ke `master`. Suite tes lainnya masih terbatas dan perlu ditambah seiring bertambahnya fitur. [Tes fitur](tests/Feature/ExampleTest.php) · [Konfigurasi panel pelanggan](app/Providers/Filament/AppPanelProvider.php)
